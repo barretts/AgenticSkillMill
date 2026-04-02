@@ -1,0 +1,29 @@
+{
+  "targets": [
+    "claude",
+    "cursor-rules",
+    "cursor-skills",
+    "windsurf-rules",
+    "windsurf-skills",
+    "opencode",
+    "codex"
+  ],
+  "skills": {
+    "agentic-skill-mill": {
+      "source": "skills/agentic-skill-mill/agentic-skill-mill.md",
+      "fragments": [
+        "meta/architecture-overview.md",
+        "meta/research-to-code.md",
+        "meta/core-module-pattern.md",
+        "meta/cli-command-pattern.md",
+        "meta/fragment-composition.md",
+        "meta/rename-workflow.md"
+      ]
+    }
+  },
+  "naming_rules": {
+    "case": "lowercase",
+    "separator": "-",
+    "forbidden_suffixes": ["final", "new", "latest", "v2"]
+  }
+}
