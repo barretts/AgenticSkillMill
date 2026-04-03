@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.skill-cache/
+.agent/
+.logs/
+beta/
