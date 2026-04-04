@@ -13,6 +13,7 @@
       "source": "skills/agentic-skill-mill/agentic-skill-mill.md",
       "fragments": [
         "meta/architecture-overview.md",
+        "meta/distribution-and-ci.md",
         "meta/research-to-code.md",
         "meta/core-module-pattern.md",
         "meta/cli-command-pattern.md",

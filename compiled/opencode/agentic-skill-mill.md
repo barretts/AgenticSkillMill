@@ -24,9 +24,15 @@ Skills (what to do)          CLI Companion (tools to do it with)
   skill/fragments/*.md         src/core/*.ts
           |                            |
           v                            v
-  compiled/ (7 IDE formats)    dist/ (npm link -> global CLI)
+  compiled/ (7 IDE formats)    dist/ (npm -> npx or global CLI)
           |                            |
           +---------> Agent <----------+
+                        ^
+                        |
+  Distribution: npm publish + agenticskillmill.com
+    .github/workflows/release.yml    (build, test, version, publish)
+    .github/workflows/deploy-pages.yml (site/ -> GitHub Pages)
+    site/install.sh                  (curl-friendly bootstrap)
 ```
 
 **Skills** are step-by-step runbooks in markdown with YAML frontmatter. They tell the agent *what* to do. Skills reference the CLI by name so the agent can invoke structured commands.
@@ -52,7 +58,92 @@ Skills (what to do)          CLI Companion (tools to do it with)
 | Add a CLI command | `src/core/<name>.ts`, `src/cli/commands/<name>.ts`, `src/cli/index.ts`, `src/index.ts` |
 | Add a fragment | `skill/fragments/<category>/<name>.md`, `skill/build/manifest.json`, skill source |
 | Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install-local.sh` SKILLS array |
+| Change installer behavior | `install.sh` (repo root) then copy to `site/install.sh` |
+| Update the landing page | `site/index.html`, `site/style.css` |
+| Change CI secrets or workflow | `.github/workflows/release.yml` or `deploy-pages.yml`, repo settings |
 | Rename the project | See the rename workflow |
+
+---
+
+## Distribution and CI
+
+### Distribution model
+
+The project is published to npmjs as a public package and hosted at `https://agenticskillmill.com`. There are three ways users consume it:
+
+| Method | Command | Who uses it |
+|--------|---------|-------------|
+| Remote install (no clone) | `bash <(curl -fsSL https://agenticskillmill.com/install.sh) --all` | End users who want skills installed into their IDE tools |
+| npx (no install) | `npx --yes agentic-skill-mill@latest <command>` | Users running CLI commands without global install |
+| Local development | `git clone` then `bash install-local.sh --all` | Contributors working on the project itself |
+
+### Two installer scripts
+
+**`install-local.sh`** is the full local installer. It runs from a cloned repo and handles:
+- `npm install` + `npm run build` + `npm run compile`
+- `npm link` to make `skillmill` available globally
+- Copies compiled skill outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.)
+- Supports `--skills-only` (skip build, just copy), `--uninstall`, `--compile-only`, and per-tool flags (`--cursor`, `--claude`, etc.)
+- Auto-detects installed tools when no flags are provided
+
+**`install.sh`** is the remote bootstrap installer. It is hosted at `https://agenticskillmill.com/install.sh` (source: `site/install.sh`) and bundled in the npm package. It:
+1. Runs `npm install -g agentic-skill-mill@latest`
+2. Locates `install-local.sh` inside the globally installed package
+3. Delegates to `install-local.sh --skills-only` with the user's flags
+
+Both scripts respect environment overrides `SKILLMILL_PACKAGE_NAME` and `SKILLMILL_PACKAGE_VERSION`.
+
+### npm package contents
+
+The `files` array in `package.json` controls what ships to npm:
+
+| Entry | Purpose |
+|-------|---------|
+| `dist` | Compiled TypeScript CLI and library |
+| `compiled` | Pre-compiled skill outputs for all 7 IDE targets |
+| `skill` | Skill sources, fragments, compiler, and manifest |
+| `README.md` | Package documentation |
+| `install.sh` | Bootstrap installer (bundled for remote delegation) |
+| `install-local.sh` | Full local installer (used by bootstrap in --skills-only mode) |
+
+The `bin` field maps `skillmill` to `dist/cli/index.js`, so `npx agentic-skill-mill` and global install both expose the `skillmill` command.
+
+### GitHub Actions workflows
+
+**Release to npm** (`.github/workflows/release.yml`):
+- Triggers on push to `main` or `workflow_dispatch`
+- Skips runs caused by its own release commits (loop guard via `chore(release):` in commit message)
+- Steps: `npm ci` -> `npm run build` -> `npm run test -- --passWithNoTests` -> `npm run compile` -> `npm run compile:validate` -> version bump -> `git push --follow-tags` -> `npm publish --access public`
+- Version bump finds the next available patch tag to avoid collisions with existing tags
+- Required secrets: `AGENT_TOKEN` (PAT with repo scope for push), `AGENT_NPM_TOKEN` (npm automation token for publish)
+
+**Deploy GitHub Pages** (`.github/workflows/deploy-pages.yml`):
+- Triggers on push to `main` when files in `site/` change, or `workflow_dispatch`
+- Uploads `site/` directory as the Pages artifact
+- Deploys to the `github-pages` environment at `agenticskillmill.com`
+
+### The `site/` directory
+
+Static site served via GitHub Pages at `https://agenticskillmill.com`:
+
+| File | Purpose |
+|------|---------|
+| `site/CNAME` | Custom domain binding |
+| `site/index.html` | Landing page with architecture, CLI commands, and install instructions |
+| `site/style.css` | Site styles |
+| `site/install.sh` | Bootstrap installer served at `https://agenticskillmill.com/install.sh` |
+
+When updating the bootstrap installer logic, edit `install.sh` at the repo root and copy it to `site/install.sh` to keep both in sync. The release workflow publishes the repo-root copy to npm; the Pages workflow serves the site copy to the domain.
+
+### Modifying distribution touchpoints
+
+| Change | Files to update |
+|--------|----------------|
+| Add a new skill | `install-local.sh` SKILLS array, `skill/build/manifest.json` |
+| Change package name | `package.json` name + bin, `install.sh` default, `site/install.sh` default, `install-local.sh` PROJECT_NAME + CLI_BIN_NAME + MANAGED_MARKER, `site/index.html`, README |
+| Change bootstrap behavior | `install.sh` (repo root), then copy to `site/install.sh` |
+| Add a GitHub Actions secret | Repo settings, document in README |
+| Update domain | `site/CNAME`, README, skill source, architecture fragment |
 
 ---
 
@@ -354,17 +445,23 @@ When the project, skill, or CLI needs a new name, update all touchpoints in one 
 
 4. **Compiler marker** (`skill/build/compile.mjs`) -- update the `MANAGED_BY` constant
 
-5. **Installer** (`install-local.sh`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, `MANAGED_MARKER`, `SKILLS` array
+5. **Local installer** (`install-local.sh`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, `MANAGED_MARKER`, `SKILLS` array
 
-6. **Package metadata** (`package.json`) -- update `name` and `bin` key
+6. **Bootstrap installer** (`install.sh`) -- update the default `PACKAGE_NAME`, then copy to `site/install.sh`
 
-7. **CLI metadata** (`src/cli/index.ts`) -- update `.name()` and `.description()` calls
+7. **Package metadata** (`package.json`) -- update `name`, `bin` key, and `description`
 
-8. **README** -- update title, CLI references, project layout example
+8. **CLI metadata** (`src/cli/index.ts`) -- update `.name()` and `.description()` calls
 
-9. **Any docs** referencing the old name (translation-map, lessons-learned, etc.)
+9. **README** -- update title, CLI references, project layout, npx examples, install URLs
 
-10. **Regenerate everything:**
+10. **Landing page** (`site/index.html`) -- update title, CLI references, install commands, GitHub link
+
+11. **GitHub Actions secrets** -- if the npm package name changed, verify `AGENT_NPM_TOKEN` still works for the new package scope
+
+12. **Any docs** referencing the old name (translation-map, lessons-learned, etc.)
+
+13. **Regenerate everything:**
     ```bash
     rm -rf compiled
     npm install          # regenerates package-lock.json
@@ -377,7 +474,7 @@ When the project, skill, or CLI needs a new name, update all touchpoints in one 
 After renaming, run this sweep to confirm no stale references remain:
 
 ```bash
-grep -r "<old-name>" --include="*.md" --include="*.json" --include="*.mjs" --include="*.ts" --include="*.sh" .
+grep -r "<old-name>" --include="*.md" --include="*.json" --include="*.mjs" --include="*.ts" --include="*.sh" --include="*.html" --include="*.yml" .
 ```
 
 The grep should return zero results (excluding node_modules and dist).

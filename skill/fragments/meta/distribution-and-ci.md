@@ -1,0 +1,77 @@
+### Distribution model
+
+The project is published to npmjs as a public package and hosted at `https://agenticskillmill.com`. There are three ways users consume it:
+
+| Method | Command | Who uses it |
+|--------|---------|-------------|
+| Remote install (no clone) | `bash <(curl -fsSL https://agenticskillmill.com/install.sh) --all` | End users who want skills installed into their IDE tools |
+| npx (no install) | `npx --yes agentic-skill-mill@latest <command>` | Users running CLI commands without global install |
+| Local development | `git clone` then `bash install-local.sh --all` | Contributors working on the project itself |
+
+### Two installer scripts
+
+**`install-local.sh`** is the full local installer. It runs from a cloned repo and handles:
+- `npm install` + `npm run build` + `npm run compile`
+- `npm link` to make `skillmill` available globally
+- Copies compiled skill outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.)
+- Supports `--skills-only` (skip build, just copy), `--uninstall`, `--compile-only`, and per-tool flags (`--cursor`, `--claude`, etc.)
+- Auto-detects installed tools when no flags are provided
+
+**`install.sh`** is the remote bootstrap installer. It is hosted at `https://agenticskillmill.com/install.sh` (source: `site/install.sh`) and bundled in the npm package. It:
+1. Runs `npm install -g agentic-skill-mill@latest`
+2. Locates `install-local.sh` inside the globally installed package
+3. Delegates to `install-local.sh --skills-only` with the user's flags
+
+Both scripts respect environment overrides `SKILLMILL_PACKAGE_NAME` and `SKILLMILL_PACKAGE_VERSION`.
+
+### npm package contents
+
+The `files` array in `package.json` controls what ships to npm:
+
+| Entry | Purpose |
+|-------|---------|
+| `dist` | Compiled TypeScript CLI and library |
+| `compiled` | Pre-compiled skill outputs for all 7 IDE targets |
+| `skill` | Skill sources, fragments, compiler, and manifest |
+| `README.md` | Package documentation |
+| `install.sh` | Bootstrap installer (bundled for remote delegation) |
+| `install-local.sh` | Full local installer (used by bootstrap in --skills-only mode) |
+
+The `bin` field maps `skillmill` to `dist/cli/index.js`, so `npx agentic-skill-mill` and global install both expose the `skillmill` command.
+
+### GitHub Actions workflows
+
+**Release to npm** (`.github/workflows/release.yml`):
+- Triggers on push to `main` or `workflow_dispatch`
+- Skips runs caused by its own release commits (loop guard via `chore(release):` in commit message)
+- Steps: `npm ci` -> `npm run build` -> `npm run test -- --passWithNoTests` -> `npm run compile` -> `npm run compile:validate` -> version bump -> `git push --follow-tags` -> `npm publish --access public`
+- Version bump finds the next available patch tag to avoid collisions with existing tags
+- Required secrets: `AGENT_TOKEN` (PAT with repo scope for push), `AGENT_NPM_TOKEN` (npm automation token for publish)
+
+**Deploy GitHub Pages** (`.github/workflows/deploy-pages.yml`):
+- Triggers on push to `main` when files in `site/` change, or `workflow_dispatch`
+- Uploads `site/` directory as the Pages artifact
+- Deploys to the `github-pages` environment at `agenticskillmill.com`
+
+### The `site/` directory
+
+Static site served via GitHub Pages at `https://agenticskillmill.com`:
+
+| File | Purpose |
+|------|---------|
+| `site/CNAME` | Custom domain binding |
+| `site/index.html` | Landing page with architecture, CLI commands, and install instructions |
+| `site/style.css` | Site styles |
+| `site/install.sh` | Bootstrap installer served at `https://agenticskillmill.com/install.sh` |
+
+When updating the bootstrap installer logic, edit `install.sh` at the repo root and copy it to `site/install.sh` to keep both in sync. The release workflow publishes the repo-root copy to npm; the Pages workflow serves the site copy to the domain.
+
+### Modifying distribution touchpoints
+
+| Change | Files to update |
+|--------|----------------|
+| Add a new skill | `install-local.sh` SKILLS array, `skill/build/manifest.json` |
+| Change package name | `package.json` name + bin, `install.sh` default, `site/install.sh` default, `install-local.sh` PROJECT_NAME + CLI_BIN_NAME + MANAGED_MARKER, `site/index.html`, README |
+| Change bootstrap behavior | `install.sh` (repo root), then copy to `site/install.sh` |
+| Add a GitHub Actions secret | Repo settings, document in README |
+| Update domain | `site/CNAME`, README, skill source, architecture fragment |
