@@ -15,7 +15,7 @@ bash install-local.sh --all    # local repo setup for all tools
 ## One-Line Remote Install (No Clone)
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/<owner>/<repo>/main/install.sh) --all
+bash <(curl -fsSL https://agenticskillmill.com/install.sh) --all
 ```
 
 This bootstrap script installs the npm utility library globally, then installs skills for the targets you specify.
@@ -79,6 +79,7 @@ src/
 
 compiled/               # Machine-generated, one subdir per IDE target
 contributions/          # Field observations from real runs
+site/                   # GitHub Pages site (agenticskillmill.com)
 install-local.sh        # One-command local setup: build CLI + install skills
 install.sh              # One-command remote bootstrap: install package + skills
 ```
