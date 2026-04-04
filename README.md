@@ -114,3 +114,22 @@ npm run lint              # ESLint
 npm run typecheck         # tsc --noEmit
 npm run compile:validate  # Validate skill compilation
 ```
+
+## Automated npm Releases (GitHub Actions)
+
+This repo includes `.github/workflows/release.yml` to build, test, bump patch version, and publish to npm when changes land on `main` (or when manually triggered).
+
+Required GitHub repository secrets:
+
+- `AGENT_TOKEN`: personal access token with `repo` scope (used to push the version bump commit + tag)
+- `NPM_TOKEN`: npm automation token for publishing to npmjs
+
+Workflow behavior:
+
+1. `npm ci`
+2. `npm run build`
+3. `npm run test`
+4. `npm run compile:validate`
+5. `npm version patch`
+6. `git push --follow-tags`
+7. `npm publish --access public`
