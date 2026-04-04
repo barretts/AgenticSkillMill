@@ -6,9 +6,15 @@ Skills (what to do)          CLI Companion (tools to do it with)
   skill/fragments/*.md         src/core/*.ts
           |                            |
           v                            v
-  compiled/ (7 IDE formats)    dist/ (npm link -> global CLI)
+  compiled/ (7 IDE formats)    dist/ (npm -> npx or global CLI)
           |                            |
           +---------> Agent <----------+
+                        ^
+                        |
+  Distribution: npm publish + agenticskillmill.com
+    .github/workflows/release.yml    (build, test, version, publish)
+    .github/workflows/deploy-pages.yml (site/ -> GitHub Pages)
+    site/install.sh                  (curl-friendly bootstrap)
 ```
 
 **Skills** are step-by-step runbooks in markdown with YAML frontmatter. They tell the agent *what* to do. Skills reference the CLI by name so the agent can invoke structured commands.
@@ -34,4 +40,7 @@ Skills (what to do)          CLI Companion (tools to do it with)
 | Add a CLI command | `src/core/<name>.ts`, `src/cli/commands/<name>.ts`, `src/cli/index.ts`, `src/index.ts` |
 | Add a fragment | `skill/fragments/<category>/<name>.md`, `skill/build/manifest.json`, skill source |
 | Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install-local.sh` SKILLS array |
+| Change installer behavior | `install.sh` (repo root) then copy to `site/install.sh` |
+| Update the landing page | `site/index.html`, `site/style.css` |
+| Change CI secrets or workflow | `.github/workflows/release.yml` or `deploy-pages.yml`, repo settings |
 | Rename the project | See the rename workflow |
