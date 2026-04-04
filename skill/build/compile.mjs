@@ -100,7 +100,12 @@ function buildFrontmatter(fields) {
   const lines = ['---'];
   lines.push(MANAGED_BY);
   for (const [k, v] of Object.entries(fields)) {
-    if (typeof v === 'string' && (v.includes(':') || v.includes('"') || v.includes("'"))) {
+    if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
+      lines.push(`${k}:`);
+      for (const [nk, nv] of Object.entries(v)) {
+        lines.push(`  ${nk}: ${nv}`);
+      }
+    } else if (typeof v === 'string' && (v.includes(':') || v.includes('"') || v.includes("'"))) {
       lines.push(`${k}: "${v.replace(/"/g, '\\"')}"`);
     } else {
       lines.push(`${k}: ${v}`);
@@ -138,7 +143,7 @@ function compileTarget(targetName, skillName, resolvedContent) {
       return buildFrontmatter({
         mode: 'subagent',
         description: `"${desc}"`,
-        tools: 'bash, read, write, edit, list, glob, grep'
+        permission: { bash: 'allow', edit: 'allow', webfetch: 'allow' }
       }) + '\n' + body;
 
     case 'codex':
