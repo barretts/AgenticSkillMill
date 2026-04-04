@@ -25,7 +25,7 @@ Skills (what to do)          CLI Companion (tools to do it with)
 - `src/errors/types.ts` — Typed error hierarchy (AppError, NotFoundError, etc.)
 - `src/cache/cache-manager.ts` — Two-tier cache (memory + disk) with TTL
 
-**The installer** (`install.sh`) builds the CLI, compiles skills, and copies compiled outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.) with marker-based stale file cleanup. The installer uses `set -e` for fail-fast behavior. Any function that uses an early-exit guard (`[[ -d ... ]] || return`, `[[ -z ... ]] && return`) **must** use `return 0`, never bare `return`. Bare `return` inherits the exit code of the last command, which for a failed conditional test is 1 -- and `set -e` treats that as a script-terminating failure with no error message.
+**The local installer** (`install-local.sh`) builds the CLI, compiles skills, and copies compiled outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.) with marker-based stale file cleanup. The bootstrap installer (`install.sh`) is remote-friendly and installs the npm utility first, then delegates to `install-local.sh --skills-only`. Local installer functions use `set -e` for fail-fast behavior. Any function that uses an early-exit guard (`[[ -d ... ]] || return`, `[[ -z ... ]] && return`) **must** use `return 0`, never bare `return`. Bare `return` inherits the exit code of the last command, which for a failed conditional test is 1 -- and `set -e` treats that as a script-terminating failure with no error message.
 
 ### Key files to modify when augmenting a project
 
@@ -33,5 +33,5 @@ Skills (what to do)          CLI Companion (tools to do it with)
 |------|---------|
 | Add a CLI command | `src/core/<name>.ts`, `src/cli/commands/<name>.ts`, `src/cli/index.ts`, `src/index.ts` |
 | Add a fragment | `skill/fragments/<category>/<name>.md`, `skill/build/manifest.json`, skill source |
-| Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install.sh` SKILLS array |
+| Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install-local.sh` SKILLS array |
 | Rename the project | See the rename workflow |
