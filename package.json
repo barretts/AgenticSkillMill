@@ -4,7 +4,7 @@
   "description": "Forge and refine agent skill projects -- fragment-composed skills compiled to 7 IDE targets with a companion CLI",
   "type": "module",
   "bin": {
-    "skillmill": "./dist/cli/index.js"
+    "skillmill": "dist/cli/index.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -49,5 +49,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
