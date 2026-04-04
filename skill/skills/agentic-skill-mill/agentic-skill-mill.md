@@ -15,6 +15,12 @@ Forge and refine skill projects that follow the skill-system-template architectu
 
 ---
 
+## Distribution and CI
+
+{{include:meta/distribution-and-ci.md}}
+
+---
+
 ## Workflow
 
 ### Step 1: Understand the Goal
