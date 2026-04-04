@@ -5,7 +5,7 @@ description: "Build, augment, and maintain skill projects that follow the skill-
 
 # Agentic Skill Mill
 
-Forge and refine skill projects that follow the skill-system-template architecture: fragment-composed skills compiled to multiple IDE targets, paired with a TypeScript companion CLI (`skillmill`) that provides structured commands for agents and humans. Prefer `npx --yes agentic-skill-mill@latest <command>` when the utility is not globally installed.
+Forge and refine skill projects that follow the skill-system-template architecture: fragment-composed skills compiled to multiple IDE targets, paired with a TypeScript companion CLI (`skillmill`) that provides structured commands for agents and humans. Prefer `npx --yes agentic-skill-mill@latest <command>` when the utility is not globally installed. Remote users can install everything via `bash <(curl -fsSL https://agenticskillmill.com/install.sh) --all`.
 
 ---
 

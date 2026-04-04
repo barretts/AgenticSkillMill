@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Skill Mill</title>
+  <meta name="description" content="Forge and refine agent skill projects -- fragment-composed skills compiled to 7 IDE targets with a companion CLI.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Agentic Skill Mill</h1>
+      <p class="tagline">Forge and refine agent skill projects.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p>Fragment-composed skills compiled to <strong>7 IDE targets</strong>, paired with a TypeScript companion CLI (<code>skillmill</code>) that provides structured commands for agents and humans.</p>
+    </section>
+
+    <section class="architecture">
+      <h2>Architecture</h2>
+      <pre><code>Skills (what to do)          CLI Companion (tools to do it with)
+  skill/skills/*.md            src/cli/commands/*.ts
+  skill/fragments/*.md         src/core/*.ts
+          |                            |
+          v                            v
+  compiled/ (7 IDE formats)    dist/ (npm link -> global CLI)
+          |                            |
+          +---------> Agent <----------+</code></pre>
+    </section>
+
+    <section class="features">
+      <h2>What It Does</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Skills</h3>
+          <p>Step-by-step runbooks in markdown with YAML frontmatter. They tell the agent <em>what</em> to do and reference the CLI by name.</p>
+        </div>
+        <div class="card">
+          <h3>Fragments</h3>
+          <p>Shared knowledge blocks included by multiple skills. Edit once, recompile, and every consumer gets the update.</p>
+        </div>
+        <div class="card">
+          <h3>Compiler</h3>
+          <p>Resolves includes, applies IDE-specific frontmatter transforms, and writes to 7 targets: Claude, Cursor, Windsurf, OpenCode, and Codex.</p>
+        </div>
+        <div class="card">
+          <h3>CLI</h3>
+          <p>Inspect manifests, validate skills, audit exports, and forge new components. Every command supports <code>--json</code> for agent consumption.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cli-commands">
+      <h2>CLI Commands</h2>
+      <table>
+        <thead>
+          <tr><th>Command</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>skillmill inspect-manifest</code></td><td>Inspect a manifest.json for correctness</td></tr>
+          <tr><td><code>skillmill inspect-skill</code></td><td>Inspect a skill source .md file</td></tr>
+          <tr><td><code>skillmill inventory</code></td><td>Take stock of all skills, fragments, and targets</td></tr>
+          <tr><td><code>skillmill forge</code></td><td>Forge scaffolding (command, skill, fragment)</td></tr>
+          <tr><td><code>skillmill audit-exports</code></td><td>Audit that src/index.ts exports match core modules</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="quickstart">
+      <h2>Install (No Clone)</h2>
+      <pre><code>bash &lt;(curl -fsSL https://agenticskillmill.com/install.sh) --all</code></pre>
+      <p>Or use npx directly:</p>
+      <pre><code>npx --yes agentic-skill-mill@latest inventory --json</code></pre>
+
+      <h2>Local Development</h2>
+      <pre><code>git clone https://github.com/barretts/AgenticSkillMill.git
+cd AgenticSkillMill
+npm install &amp;&amp; npm run build &amp;&amp; npm run compile
+bash install-local.sh --all</code></pre>
+    </section>
+
+    <section class="targets">
+      <h2>Compilation Targets</h2>
+      <table>
+        <thead>
+          <tr><th>Target</th><th>Output</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Claude</td><td><code>compiled/claude/&lt;skill&gt;/SKILL.md</code></td></tr>
+          <tr><td>Cursor (rules)</td><td><code>compiled/cursor/rules/&lt;skill&gt;.mdc</code></td></tr>
+          <tr><td>Cursor (skills)</td><td><code>compiled/cursor/skills/&lt;skill&gt;/SKILL.md</code></td></tr>
+          <tr><td>Windsurf (rules)</td><td><code>compiled/windsurf/rules/&lt;skill&gt;.md</code></td></tr>
+          <tr><td>Windsurf (skills)</td><td><code>compiled/windsurf/skills/&lt;skill&gt;/SKILL.md</code></td></tr>
+          <tr><td>OpenCode</td><td><code>compiled/opencode/&lt;skill&gt;.md</code></td></tr>
+          <tr><td>Codex</td><td><code>compiled/codex/&lt;skill&gt;/SKILL.md</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p><a href="https://github.com/barretts/AgenticSkillMill">View on GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
