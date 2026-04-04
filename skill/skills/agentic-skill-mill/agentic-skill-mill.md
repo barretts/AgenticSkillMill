@@ -5,7 +5,7 @@ description: "Build, augment, and maintain skill projects that follow the skill-
 
 # Agentic Skill Mill
 
-Forge and refine skill projects that follow the skill-system-template architecture: fragment-composed skills compiled to multiple IDE targets, paired with a TypeScript companion CLI (`skillmill`) that provides structured commands for agents and humans.
+Forge and refine skill projects that follow the skill-system-template architecture: fragment-composed skills compiled to multiple IDE targets, paired with a TypeScript companion CLI (`skillmill`) that provides structured commands for agents and humans. Prefer `npx --yes agentic-skill-mill@latest <command>` when the utility is not globally installed.
 
 ---
 
@@ -83,7 +83,7 @@ Direct content or more includes.
 Then register it:
 
 1. Add the skill entry to `skill/build/manifest.json` with its source path and fragment dependencies
-2. Add the skill name to the `SKILLS` array in `install.sh`
+2. Add the skill name to the `SKILLS` array in `install-local.sh`
 3. Compile: `npm run compile`
 
 ### Step 8: If Renaming the Project
@@ -98,15 +98,15 @@ After any change, run the full verification sequence:
 npm run build              # TypeScript CLI compiles cleanly
 npm run compile            # Skills compile to all 7 IDE targets
 npm run compile:validate   # Cross-validates manifest vs source includes
-node dist/cli/index.js --help  # CLI shows expected commands
+npx --yes agentic-skill-mill@latest --help  # CLI command surface works via npx
 ```
 
 If adding a new CLI command, also verify it runs:
 
 ```bash
-node dist/cli/index.js <command> --help     # Options are correct
-node dist/cli/index.js <command> <args>     # Human output works
-node dist/cli/index.js <command> --json     # JSON output works
+npx --yes agentic-skill-mill@latest <command> --help  # Options are correct
+npx --yes agentic-skill-mill@latest <command> <args>  # Human output works
+npx --yes agentic-skill-mill@latest <command> --json  # JSON output works
 ```
 
 ### Step 10: Commit
@@ -130,4 +130,4 @@ The commit body should list every file category changed (core modules, CLI wrapp
 - **Stale compiled outputs.** Always recompile after changing skills or fragments. Run `npm run compile:validate` to detect staleness.
 - **Partial renames.** When renaming, update every touchpoint in one pass (see rename workflow). A grep sweep with zero results confirms completeness.
 - **Missing --json support.** Every CLI command must support `--json` for structured agent consumption. Agents cannot parse chalk-colored terminal output.
-- **Bare `return` in `set -e` scripts.** In `install.sh`, never write `[[ condition ]] || return` or `grep ... || return`. Bare `return` inherits the exit code of the failed test (1), which `set -e` treats as fatal -- killing the script silently. Always use `return 0` for early-exit guards: `[[ -d "$dir" ]] || return 0`, `[[ -z "$var" ]] && return 0`.
+- **Bare `return` in `set -e` scripts.** In `install-local.sh`, never write `[[ condition ]] || return` or `grep ... || return`. Bare `return` inherits the exit code of the failed test (1), which `set -e` treats as fatal -- killing the script silently. Always use `return 0` for early-exit guards: `[[ -d "$dir" ]] || return 0`, `[[ -z "$var" ]] && return 0`.

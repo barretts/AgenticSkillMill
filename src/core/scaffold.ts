@@ -169,7 +169,7 @@ More content.
     ],
     instructions: [
       `Add skill entry to skill/build/manifest.json`,
-      `Add "${name}" to the SKILLS array in install.sh`,
+      `Add "${name}" to the SKILLS array in install-local.sh`,
       `Run: npm run compile`,
     ],
     warnings,

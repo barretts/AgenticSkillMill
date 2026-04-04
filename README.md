@@ -8,9 +8,17 @@ Forge and refine agent skill projects. The skill teaches agents how to work with
 npm install
 npm run build
 npm run compile
-bash install.sh          # auto-detect installed tools
-bash install.sh --all    # or install for all tools
+bash install-local.sh          # local repo setup (auto-detect tools)
+bash install-local.sh --all    # local repo setup for all tools
 ```
+
+## One-Line Remote Install (No Clone)
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/<owner>/<repo>/main/install.sh) --all
+```
+
+This bootstrap script installs the npm utility library globally, then installs skills for the targets you specify.
 
 ## Architecture
 
@@ -42,6 +50,11 @@ Skills (what to do)          CLI Companion (tools to do it with)
 | `skillmill audit-exports` | Audit that src/index.ts exports match core modules |
 
 All commands support `--json` for structured agent consumption.
+You can run them without global install using npx, for example:
+
+```bash
+npx --yes agentic-skill-mill@latest inventory --json
+```
 
 ## Project Layout
 
@@ -66,14 +79,15 @@ src/
 
 compiled/               # Machine-generated, one subdir per IDE target
 contributions/          # Field observations from real runs
-install.sh              # One-command setup: build CLI + install skills
+install-local.sh        # One-command local setup: build CLI + install skills
+install.sh              # One-command remote bootstrap: install package + skills
 ```
 
 ## How to Add a Skill
 
 1. Create the source file at `skill/skills/<name>/<name>.md` with YAML frontmatter
 2. Register it in `skill/build/manifest.json`
-3. Add the skill name to the `SKILLS` array in `install.sh`
+3. Add the skill name to the `SKILLS` array in `install-local.sh`
 4. Compile and validate: `npm run compile && npm run compile:validate`
 
 ## How to Add a Fragment
@@ -90,7 +104,7 @@ install.sh              # One-command setup: build CLI + install skills
 4. Export the public API from `src/index.ts`
 5. Rebuild: `npm run build`
 
-Or use the forge command: `skillmill forge command <name> --write`
+Or use the forge command with npx: `npx --yes agentic-skill-mill@latest forge command <name> --write`
 
 ## Compilation Targets
 
@@ -128,8 +142,8 @@ Workflow behavior:
 
 1. `npm ci`
 2. `npm run build`
-3. `npm run test`
-4. `npm run compile:validate`
-5. `npm version patch`
+3. `npm run test -- --passWithNoTests`
+4. `npm run compile`
+5. `npm run compile:validate`
 6. `git push --follow-tags`
 7. `npm publish --access public`

@@ -6,7 +6,7 @@ description: "Build, augment, and maintain skill projects that follow the skill-
 
 # Agentic Skill Mill
 
-Forge and refine skill projects that follow the skill-system-template architecture: fragment-composed skills compiled to multiple IDE targets, paired with a TypeScript companion CLI (`skillmill`) that provides structured commands for agents and humans.
+Forge and refine skill projects that follow the skill-system-template architecture: fragment-composed skills compiled to multiple IDE targets, paired with a TypeScript companion CLI (`skillmill`) that provides structured commands for agents and humans. Prefer `npx --yes agentic-skill-mill@latest <command>` when the utility is not globally installed.
 
 ---
 
@@ -39,7 +39,7 @@ Skills (what to do)          CLI Companion (tools to do it with)
 - `src/errors/types.ts` — Typed error hierarchy (AppError, NotFoundError, etc.)
 - `src/cache/cache-manager.ts` — Two-tier cache (memory + disk) with TTL
 
-**The installer** (`install.sh`) builds the CLI, compiles skills, and copies compiled outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.) with marker-based stale file cleanup. The installer uses `set -e` for fail-fast behavior. Any function that uses an early-exit guard (`[[ -d ... ]] || return`, `[[ -z ... ]] && return`) **must** use `return 0`, never bare `return`. Bare `return` inherits the exit code of the last command, which for a failed conditional test is 1 -- and `set -e` treats that as a script-terminating failure with no error message.
+**The local installer** (`install-local.sh`) builds the CLI, compiles skills, and copies compiled outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.) with marker-based stale file cleanup. The bootstrap installer (`install.sh`) is remote-friendly and installs the npm utility first, then delegates to `install-local.sh --skills-only`. Local installer functions use `set -e` for fail-fast behavior. Any function that uses an early-exit guard (`[[ -d ... ]] || return`, `[[ -z ... ]] && return`) **must** use `return 0`, never bare `return`. Bare `return` inherits the exit code of the last command, which for a failed conditional test is 1 -- and `set -e` treats that as a script-terminating failure with no error message.
 
 ### Key files to modify when augmenting a project
 
@@ -47,7 +47,7 @@ Skills (what to do)          CLI Companion (tools to do it with)
 |------|---------|
 | Add a CLI command | `src/core/<name>.ts`, `src/cli/commands/<name>.ts`, `src/cli/index.ts`, `src/index.ts` |
 | Add a fragment | `skill/fragments/<category>/<name>.md`, `skill/build/manifest.json`, skill source |
-| Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install.sh` SKILLS array |
+| Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install-local.sh` SKILLS array |
 | Rename the project | See the rename workflow |
 
 ---
@@ -321,7 +321,7 @@ Direct content or more includes.
 Then register it:
 
 1. Add the skill entry to `skill/build/manifest.json` with its source path and fragment dependencies
-2. Add the skill name to the `SKILLS` array in `install.sh`
+2. Add the skill name to the `SKILLS` array in `install-local.sh`
 3. Compile: `npm run compile`
 
 ### Step 8: If Renaming the Project
@@ -350,7 +350,7 @@ When the project, skill, or CLI needs a new name, update all touchpoints in one 
 
 4. **Compiler marker** (`skill/build/compile.mjs`) -- update the `MANAGED_BY` constant
 
-5. **Installer** (`install.sh`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, `MANAGED_MARKER`, `SKILLS` array
+5. **Installer** (`install-local.sh`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, `MANAGED_MARKER`, `SKILLS` array
 
 6. **Package metadata** (`package.json`) -- update `name` and `bin` key
 
@@ -386,15 +386,15 @@ After any change, run the full verification sequence:
 npm run build              # TypeScript CLI compiles cleanly
 npm run compile            # Skills compile to all 7 IDE targets
 npm run compile:validate   # Cross-validates manifest vs source includes
-node dist/cli/index.js --help  # CLI shows expected commands
+npx --yes agentic-skill-mill@latest --help  # CLI command surface works via npx
 ```
 
 If adding a new CLI command, also verify it runs:
 
 ```bash
-node dist/cli/index.js <command> --help     # Options are correct
-node dist/cli/index.js <command> <args>     # Human output works
-node dist/cli/index.js <command> --json     # JSON output works
+npx --yes agentic-skill-mill@latest <command> --help  # Options are correct
+npx --yes agentic-skill-mill@latest <command> <args>  # Human output works
+npx --yes agentic-skill-mill@latest <command> --json  # JSON output works
 ```
 
 ### Step 10: Commit
@@ -418,4 +418,4 @@ The commit body should list every file category changed (core modules, CLI wrapp
 - **Stale compiled outputs.** Always recompile after changing skills or fragments. Run `npm run compile:validate` to detect staleness.
 - **Partial renames.** When renaming, update every touchpoint in one pass (see rename workflow). A grep sweep with zero results confirms completeness.
 - **Missing --json support.** Every CLI command must support `--json` for structured agent consumption. Agents cannot parse chalk-colored terminal output.
-- **Bare `return` in `set -e` scripts.** In `install.sh`, never write `[[ condition ]] || return` or `grep ... || return`. Bare `return` inherits the exit code of the failed test (1), which `set -e` treats as fatal -- killing the script silently. Always use `return 0` for early-exit guards: `[[ -d "$dir" ]] || return 0`, `[[ -z "$var" ]] && return 0`.
+- **Bare `return` in `set -e` scripts.** In `install-local.sh`, never write `[[ condition ]] || return` or `grep ... || return`. Bare `return` inherits the exit code of the failed test (1), which `set -e` treats as fatal -- killing the script silently. Always use `return 0` for early-exit guards: `[[ -d "$dir" ]] || return 0`, `[[ -z "$var" ]] && return 0`.
