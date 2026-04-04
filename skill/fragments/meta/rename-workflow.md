@@ -22,17 +22,23 @@ When the project, skill, or CLI needs a new name, update all touchpoints in one 
 
 4. **Compiler marker** (`skill/build/compile.mjs`) -- update the `MANAGED_BY` constant
 
-5. **Installer** (`install-local.sh`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, `MANAGED_MARKER`, `SKILLS` array
+5. **Local installer** (`install-local.sh`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, `MANAGED_MARKER`, `SKILLS` array
 
-6. **Package metadata** (`package.json`) -- update `name` and `bin` key
+6. **Bootstrap installer** (`install.sh`) -- update the default `PACKAGE_NAME`, then copy to `site/install.sh`
 
-7. **CLI metadata** (`src/cli/index.ts`) -- update `.name()` and `.description()` calls
+7. **Package metadata** (`package.json`) -- update `name`, `bin` key, and `description`
 
-8. **README** -- update title, CLI references, project layout example
+8. **CLI metadata** (`src/cli/index.ts`) -- update `.name()` and `.description()` calls
 
-9. **Any docs** referencing the old name (translation-map, lessons-learned, etc.)
+9. **README** -- update title, CLI references, project layout, npx examples, install URLs
 
-10. **Regenerate everything:**
+10. **Landing page** (`site/index.html`) -- update title, CLI references, install commands, GitHub link
+
+11. **GitHub Actions secrets** -- if the npm package name changed, verify `AGENT_NPM_TOKEN` still works for the new package scope
+
+12. **Any docs** referencing the old name (translation-map, lessons-learned, etc.)
+
+13. **Regenerate everything:**
     ```bash
     rm -rf compiled
     npm install          # regenerates package-lock.json
@@ -45,7 +51,7 @@ When the project, skill, or CLI needs a new name, update all touchpoints in one 
 After renaming, run this sweep to confirm no stale references remain:
 
 ```bash
-grep -r "<old-name>" --include="*.md" --include="*.json" --include="*.mjs" --include="*.ts" --include="*.sh" .
+grep -r "<old-name>" --include="*.md" --include="*.json" --include="*.mjs" --include="*.ts" --include="*.sh" --include="*.html" --include="*.yml" .
 ```
 
 The grep should return zero results (excluding node_modules and dist).
