@@ -213,8 +213,10 @@ echo "    Targets: ${TARGETS[*]}"
 echo ""
 
 if [[ "$DO_BUILD" == true ]]; then
+  cd "$SKILL_DIR"
+
   echo "--> Installing dependencies..."
-  npm install
+  npm install --include=dev
 
   echo "--> Cleaning previous build..."
   rm -rf "$SKILL_DIR/dist"

@@ -9,6 +9,11 @@ Skills (what to do)          CLI Companion (tools to do it with)
   compiled/ (7 IDE formats)    dist/ (npm link -> global CLI)
           |                            |
           +---------> Agent <----------+
+                        ^
+                        |
+  Distribution (pick one):
+    Public repo:  npm publish + curl bootstrap via GitHub Pages
+    Private repo: gh repo clone + gh api bootstrap (no npm/Pages needed)
 ```
 
 **Skills** are step-by-step runbooks in markdown with YAML frontmatter. They tell the agent *what* to do. Skills reference the CLI by name so the agent can invoke structured commands.
@@ -34,4 +39,5 @@ Skills (what to do)          CLI Companion (tools to do it with)
 | Add a CLI command | `src/core/<name>.ts`, `src/cli/commands/<name>.ts`, `src/cli/index.ts`, `src/index.ts` |
 | Add a fragment | `skill/fragments/<category>/<name>.md`, `skill/build/manifest.json`, skill source |
 | Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install.sh` SKILLS array |
+| Change installer behavior | `install.sh`, and if the project has a remote bootstrap: `site/install.sh` |
 | Rename the project | See the rename workflow |

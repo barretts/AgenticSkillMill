@@ -32,12 +32,14 @@ When the project, skill, or CLI needs a new name, update all touchpoints in one 
 
 9. **Any docs** referencing the old name (translation-map, lessons-learned, etc.)
 
-10. **Regenerate everything:**
+10. **Bootstrap installer** (if the project has a remote bootstrap) -- update `site/install.sh` default repo/package references, README one-liner, and landing page install block
+
+11. **Regenerate everything:**
     ```bash
     rm -rf compiled
-    npm install          # regenerates package-lock.json
-    npm run build        # rebuilds TypeScript CLI
-    npm run compile      # regenerates compiled/ under new paths
+    npm install --include=dev  # regenerates package-lock.json
+    npm run build              # rebuilds TypeScript CLI
+    npm run compile            # regenerates compiled/ under new paths
     ```
 
 ### Verification
