@@ -12,10 +12,22 @@ bash install-local.sh          # local repo setup (auto-detect tools)
 bash install-local.sh --all    # local repo setup for all tools
 ```
 
+```powershell
+npm install
+npm run build
+npm run compile
+powershell -ExecutionPolicy Bypass -File .\install-local.ps1
+powershell -ExecutionPolicy Bypass -File .\install-local.ps1 --all
+```
+
 ## One-Line Remote Install (No Clone)
 
 ```bash
 bash <(curl -fsSL https://agenticskillmill.com/install.sh) --all
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -Command "& ([ScriptBlock]::Create((Invoke-RestMethod 'https://agenticskillmill.com/install.ps1'))) --all"
 ```
 
 This bootstrap script installs the npm utility library globally, then installs skills for the targets you specify.
@@ -81,14 +93,16 @@ compiled/               # Machine-generated, one subdir per IDE target
 contributions/          # Field observations from real runs
 site/                   # GitHub Pages site (agenticskillmill.com)
 install-local.sh        # One-command local setup: build CLI + install skills
+install-local.ps1       # One-command local setup for Windows PowerShell
 install.sh              # One-command remote bootstrap: install package + skills
+install.ps1             # One-command remote bootstrap for Windows PowerShell
 ```
 
 ## How to Add a Skill
 
 1. Create the source file at `skill/skills/<name>/<name>.md` with YAML frontmatter
 2. Register it in `skill/build/manifest.json`
-3. Add the skill name to the `SKILLS` array in `install-local.sh`
+3. Add the skill name to the `SKILLS` array in `install-local.sh` and `install-local.ps1`
 4. Compile and validate: `npm run compile && npm run compile:validate`
 
 ## How to Add a Fragment

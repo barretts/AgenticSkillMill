@@ -20,7 +20,9 @@
     "skill",
     "README.md",
     "install.sh",
-    "install-local.sh"
+    "install-local.sh",
+    "install.ps1",
+    "install-local.ps1"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -31,8 +33,12 @@
     "typecheck": "tsc --noEmit",
     "setup": "bash install-local.sh",
     "setup:all": "bash install-local.sh --all",
+    "setup:windows": "powershell -ExecutionPolicy Bypass -File ./install-local.ps1",
+    "setup:windows:all": "powershell -ExecutionPolicy Bypass -File ./install-local.ps1 --all",
     "install-skills": "bash install-local.sh --skills-only",
+    "install-skills:windows": "powershell -ExecutionPolicy Bypass -File ./install-local.ps1 --skills-only",
     "uninstall-skills": "bash install-local.sh --uninstall",
+    "uninstall-skills:windows": "powershell -ExecutionPolicy Bypass -File ./install-local.ps1 --uninstall",
     "compile": "node skill/build/compile.mjs",
     "compile:validate": "node skill/build/compile.mjs --validate",
     "compile:watch": "node skill/build/compile.mjs --watch"
