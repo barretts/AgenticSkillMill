@@ -73,6 +73,7 @@
     <section class="quickstart">
       <h2>Install (No Clone)</h2>
       <pre><code>bash &lt;(curl -fsSL https://agenticskillmill.com/install.sh) --all</code></pre>
+      <pre><code>powershell -ExecutionPolicy Bypass -Command "&amp; ([ScriptBlock]::Create((Invoke-RestMethod 'https://agenticskillmill.com/install.ps1'))) --all"</code></pre>
       <p>Or use npx directly:</p>
       <pre><code>npx --yes agentic-skill-mill@latest inventory --json</code></pre>
 
@@ -81,6 +82,12 @@
 cd AgenticSkillMill
 npm install &amp;&amp; npm run build &amp;&amp; npm run compile
 bash install-local.sh --all</code></pre>
+      <pre><code>git clone https://github.com/barretts/AgenticSkillMill.git
+cd AgenticSkillMill
+npm install
+npm run build
+npm run compile
+powershell -ExecutionPolicy Bypass -File .\install-local.ps1 --all</code></pre>
     </section>
 
     <section class="targets">
