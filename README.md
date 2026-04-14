@@ -162,3 +162,15 @@ Workflow behavior:
 5. `npm run compile:validate`
 6. `git push --follow-tags`
 7. `npm publish --access public`
+
+## Ecosystem
+
+Agentic Skill Mill is the parent project that defines the skill-system-template architecture. The following projects are built on the same fragment-composition, 7-target compilation, and companion-CLI pattern:
+
+| Project | What it does | Site | Repo |
+|---------|-------------|------|------|
+| **[AgentThreader](https://github.com/barretts/AgentThreader)** | Manifest-driven agentic CLI orchestration with structured contracts, resumable state, and bounded self-healing | [agentthreader.com](https://agentthreader.com) | [GitHub](https://github.com/barretts/AgentThreader) |
+| **[TechDemoDirector](https://github.com/barretts/TechDemoDirector)** | Code walk-through presentation scripting with file:line references and speaker notes | [Site](https://barretts.github.io/TechDemoDirector) | [GitHub](https://github.com/barretts/TechDemoDirector) |
+| **[AgentHistoric](https://github.com/barretts/AgentHistoric)** | Mixture-of-Experts persona prompt system with philosophical grounding and adversarial verification | [agenthistoric.com](https://agenthistoric.com) | [GitHub](https://github.com/barretts/AgentHistoric) |
+
+AgentHistoric shares the compilation tooling but has its own MoE routing layer and regression suite. The other two are direct descendants of the skill-system-template.
