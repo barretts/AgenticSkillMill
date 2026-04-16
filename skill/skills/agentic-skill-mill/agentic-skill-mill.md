@@ -125,6 +125,8 @@ Use conventional commit format with a detailed body:
 
 The commit body should list every file category changed (core modules, CLI wrappers, fragments, manifest, etc.) and what was done in each.
 
+{{include:meta/skill-signature.md}}
+
 ---
 
 ## Anti-Patterns
