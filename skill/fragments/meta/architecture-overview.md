@@ -31,6 +31,8 @@ Skills (what to do)          CLI Companion (tools to do it with)
 - `src/errors/types.ts` — Typed error hierarchy (AppError, NotFoundError, etc.)
 - `src/cache/cache-manager.ts` — Two-tier cache (memory + disk) with TTL
 
+**Local installers:** Every project ships `install.sh` (bash) and `install.ps1` (PowerShell). Both support the same flags and produce identical installed state.
+
 **The local installer** (`install-local.sh`) builds the CLI, compiles skills, and copies compiled outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.) with marker-based stale file cleanup. The bootstrap installer is hosted at `https://agenticskillmill.com/install.sh` (source: `site/install.sh`) and is also bundled in the npm package as `install.sh`. It installs the npm utility first, then delegates to `install-local.sh --skills-only`. Local installer functions use `set -e` for fail-fast behavior. Any function that uses an early-exit guard (`[[ -d ... ]] || return`, `[[ -z ... ]] && return`) **must** use `return 0`, never bare `return`. Bare `return` inherits the exit code of the last command, which for a failed conditional test is 1 -- and `set -e` treats that as a script-terminating failure with no error message.
 
 ### Key files to modify when augmenting a project
@@ -40,7 +42,7 @@ Skills (what to do)          CLI Companion (tools to do it with)
 | Add a CLI command | `src/core/<name>.ts`, `src/cli/commands/<name>.ts`, `src/cli/index.ts`, `src/index.ts` |
 | Add a fragment | `skill/fragments/<category>/<name>.md`, `skill/build/manifest.json`, skill source |
 | Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install-local.sh` SKILLS array |
-| Change installer behavior | `install.sh` (repo root) then copy to `site/install.sh` |
+| Change installer behavior | `install.sh` and `install.ps1` (repo root), then copy bootstraps to `site/` |
 | Update the landing page | `site/index.html`, `site/style.css` |
 | Change CI secrets or workflow | `.github/workflows/release.yml` or `deploy-pages.yml`, repo settings |
 | Rename the project | See the rename workflow |
