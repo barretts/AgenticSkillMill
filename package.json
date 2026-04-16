@@ -1,6 +1,6 @@
 {
   "name": "agentic-skill-mill",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Forge and refine agent skill projects -- fragment-composed skills compiled to 7 IDE targets with a companion CLI",
   "type": "module",
   "bin": {
