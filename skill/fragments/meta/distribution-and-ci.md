@@ -1,10 +1,15 @@
 ### Distribution model
 
-The project is published to npmjs as a public package and hosted at `https://agenticskillmill.com`. There are three ways users consume it:
+The project is published to npmjs as a public package and hosted at `https://agenticskillmill.com`.
+
+**Remote install (no clone):** Every project hosts `site/install.sh` and `site/install.ps1` bootstrap scripts served via GitHub Pages. Non-npm projects use a clone-to-temp pattern instead of `npm install -g`.
+
+There are multiple ways users consume it:
 
 | Method | Command | Who uses it |
 |--------|---------|-------------|
-| Remote install (no clone) | `bash <(curl -fsSL https://agenticskillmill.com/install.sh) --all` | End users who want skills installed into their IDE tools |
+| Remote install (bash) | `bash <(curl -fsSL https://<domain>/install.sh)` | End users on Linux/macOS |
+| Remote install (PowerShell) | `irm https://<domain>/install.ps1 \| iex` | End users on Windows |
 | npx (no install) | `npx --yes agentic-skill-mill@latest <command>` | Users running CLI commands without global install |
 | Local development | `git clone` then `bash install-local.sh --all` | Contributors working on the project itself |
 
@@ -63,8 +68,9 @@ Static site served via GitHub Pages at `https://agenticskillmill.com`:
 | `site/index.html` | Landing page with architecture, CLI commands, and install instructions |
 | `site/style.css` | Site styles |
 | `site/install.sh` | Bootstrap installer served at `https://agenticskillmill.com/install.sh` |
+| `site/install.ps1` | PowerShell bootstrap installer served at `https://agenticskillmill.com/install.ps1` |
 
-When updating the bootstrap installer logic, edit `install.sh` at the repo root and copy it to `site/install.sh` to keep both in sync. The release workflow publishes the repo-root copy to npm; the Pages workflow serves the site copy to the domain.
+When updating the bootstrap installer logic, edit `install.sh` and `install.ps1` at the repo root and copy them to `site/install.sh` and `site/install.ps1` to keep both in sync. The release workflow publishes the repo-root copies to npm; the Pages workflow serves the site copies to the domain.
 
 ### Modifying distribution touchpoints
 
@@ -72,6 +78,6 @@ When updating the bootstrap installer logic, edit `install.sh` at the repo root 
 |--------|----------------|
 | Add a new skill | `install-local.sh` SKILLS array, `skill/build/manifest.json` |
 | Change package name | `package.json` name + bin, `install.sh` default, `site/install.sh` default, `install-local.sh` PROJECT_NAME + CLI_BIN_NAME + MANAGED_MARKER, `site/index.html`, README |
-| Change bootstrap behavior | `install.sh` (repo root), then copy to `site/install.sh` |
+| Change bootstrap behavior | `install.sh` and `install.ps1` (repo root), then copy to `site/install.sh` and `site/install.ps1` |
 | Add a GitHub Actions secret | Repo settings, document in README |
 | Update domain | `site/CNAME`, README, skill source, architecture fragment |

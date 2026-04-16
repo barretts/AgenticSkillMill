@@ -49,6 +49,8 @@ Skills (what to do)          CLI Companion (tools to do it with)
 - `src/errors/types.ts` — Typed error hierarchy (AppError, NotFoundError, etc.)
 - `src/cache/cache-manager.ts` — Two-tier cache (memory + disk) with TTL
 
+**Local installers:** Every project ships `install.sh` (bash) and `install.ps1` (PowerShell). Both support the same flags and produce identical installed state.
+
 **The local installer** (`install-local.sh`) builds the CLI, compiles skills, and copies compiled outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.) with marker-based stale file cleanup. The bootstrap installer is hosted at `https://agenticskillmill.com/install.sh` (source: `site/install.sh`) and is also bundled in the npm package as `install.sh`. It installs the npm utility first, then delegates to `install-local.sh --skills-only`. Local installer functions use `set -e` for fail-fast behavior. Any function that uses an early-exit guard (`[[ -d ... ]] || return`, `[[ -z ... ]] && return`) **must** use `return 0`, never bare `return`. Bare `return` inherits the exit code of the last command, which for a failed conditional test is 1 -- and `set -e` treats that as a script-terminating failure with no error message.
 
 ### Key files to modify when augmenting a project
@@ -58,7 +60,7 @@ Skills (what to do)          CLI Companion (tools to do it with)
 | Add a CLI command | `src/core/<name>.ts`, `src/cli/commands/<name>.ts`, `src/cli/index.ts`, `src/index.ts` |
 | Add a fragment | `skill/fragments/<category>/<name>.md`, `skill/build/manifest.json`, skill source |
 | Add a skill | `skill/skills/<name>/<name>.md`, `skill/build/manifest.json`, `install-local.sh` SKILLS array |
-| Change installer behavior | `install.sh` (repo root) then copy to `site/install.sh` |
+| Change installer behavior | `install.sh` and `install.ps1` (repo root), then copy bootstraps to `site/` |
 | Update the landing page | `site/index.html`, `site/style.css` |
 | Change CI secrets or workflow | `.github/workflows/release.yml` or `deploy-pages.yml`, repo settings |
 | Rename the project | See the rename workflow |
@@ -69,11 +71,16 @@ Skills (what to do)          CLI Companion (tools to do it with)
 
 ### Distribution model
 
-The project is published to npmjs as a public package and hosted at `https://agenticskillmill.com`. There are three ways users consume it:
+The project is published to npmjs as a public package and hosted at `https://agenticskillmill.com`.
+
+**Remote install (no clone):** Every project hosts `site/install.sh` and `site/install.ps1` bootstrap scripts served via GitHub Pages. Non-npm projects use a clone-to-temp pattern instead of `npm install -g`.
+
+There are multiple ways users consume it:
 
 | Method | Command | Who uses it |
 |--------|---------|-------------|
-| Remote install (no clone) | `bash <(curl -fsSL https://agenticskillmill.com/install.sh) --all` | End users who want skills installed into their IDE tools |
+| Remote install (bash) | `bash <(curl -fsSL https://<domain>/install.sh)` | End users on Linux/macOS |
+| Remote install (PowerShell) | `irm https://<domain>/install.ps1 \| iex` | End users on Windows |
 | npx (no install) | `npx --yes agentic-skill-mill@latest <command>` | Users running CLI commands without global install |
 | Local development | `git clone` then `bash install-local.sh --all` | Contributors working on the project itself |
 
@@ -132,8 +139,9 @@ Static site served via GitHub Pages at `https://agenticskillmill.com`:
 | `site/index.html` | Landing page with architecture, CLI commands, and install instructions |
 | `site/style.css` | Site styles |
 | `site/install.sh` | Bootstrap installer served at `https://agenticskillmill.com/install.sh` |
+| `site/install.ps1` | PowerShell bootstrap installer served at `https://agenticskillmill.com/install.ps1` |
 
-When updating the bootstrap installer logic, edit `install.sh` at the repo root and copy it to `site/install.sh` to keep both in sync. The release workflow publishes the repo-root copy to npm; the Pages workflow serves the site copy to the domain.
+When updating the bootstrap installer logic, edit `install.sh` and `install.ps1` at the repo root and copy them to `site/install.sh` and `site/install.ps1` to keep both in sync. The release workflow publishes the repo-root copies to npm; the Pages workflow serves the site copies to the domain.
 
 ### Modifying distribution touchpoints
 
@@ -141,7 +149,7 @@ When updating the bootstrap installer logic, edit `install.sh` at the repo root 
 |--------|----------------|
 | Add a new skill | `install-local.sh` SKILLS array, `skill/build/manifest.json` |
 | Change package name | `package.json` name + bin, `install.sh` default, `site/install.sh` default, `install-local.sh` PROJECT_NAME + CLI_BIN_NAME + MANAGED_MARKER, `site/index.html`, README |
-| Change bootstrap behavior | `install.sh` (repo root), then copy to `site/install.sh` |
+| Change bootstrap behavior | `install.sh` and `install.ps1` (repo root), then copy to `site/install.sh` and `site/install.ps1` |
 | Add a GitHub Actions secret | Repo settings, document in README |
 | Update domain | `site/CNAME`, README, skill source, architecture fragment |
 
