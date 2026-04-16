@@ -18,7 +18,8 @@
         "meta/core-module-pattern.md",
         "meta/cli-command-pattern.md",
         "meta/fragment-composition.md",
-        "meta/rename-workflow.md"
+        "meta/rename-workflow.md",
+        "meta/skill-signature.md"
       ]
     }
   },
