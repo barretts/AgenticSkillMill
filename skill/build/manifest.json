@@ -1,9 +1,7 @@
 {
   "targets": [
     "claude",
-    "cursor-rules",
     "cursor-skills",
-    "windsurf-rules",
     "windsurf-skills",
     "opencode",
     "codex"

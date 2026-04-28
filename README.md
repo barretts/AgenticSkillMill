@@ -8,16 +8,16 @@ Forge and refine agent skill projects. The skill teaches agents how to work with
 npm install
 npm run build
 npm run compile
-bash install-local.sh          # local repo setup (auto-detect tools)
-bash install-local.sh --all    # local repo setup for all tools
+node install.js           # local repo setup (auto-detect tools)
+node install.js --all    # local repo setup for all tools
 ```
 
 ```powershell
 npm install
 npm run build
 npm run compile
-powershell -ExecutionPolicy Bypass -File .\install-local.ps1
-powershell -ExecutionPolicy Bypass -File .\install-local.ps1 --all
+node install.js
+node install.js --all
 ```
 
 ## One-Line Remote Install (No Clone)
@@ -40,7 +40,7 @@ Skills (what to do)          CLI Companion (tools to do it with)
   skill/fragments/*.md         src/core/*.ts
           |                            |
           v                            v
-  compiled/ (7 IDE formats)    dist/ (npm link -> global CLI)
+  compiled/ (5 IDE formats)    dist/ (npm link -> global CLI)
           |                            |
           +---------> Agent <----------+
 ```
@@ -92,18 +92,14 @@ src/
 compiled/               # Machine-generated, one subdir per IDE target
 contributions/          # Field observations from real runs
 site/                   # GitHub Pages site (agenticskillmill.com)
-install-local.sh        # One-command local setup: build CLI + install skills
-install-local.ps1       # One-command local setup for Windows PowerShell
-install.sh              # One-command remote bootstrap: install package + skills
-install.ps1             # One-command remote bootstrap for Windows PowerShell
+install.js              # One-command local setup: build CLI + install skills
 ```
 
 ## How to Add a Skill
 
 1. Create the source file at `skill/skills/<name>/<name>.md` with YAML frontmatter
 2. Register it in `skill/build/manifest.json`
-3. Add the skill name to the `SKILLS` array in `install-local.sh` and `install-local.ps1`
-4. Compile and validate: `npm run compile && npm run compile:validate`
+3. Compile and validate: `npm run compile && npm run compile:validate`
 
 ## How to Add a Fragment
 
@@ -165,7 +161,7 @@ Workflow behavior:
 
 ## Ecosystem
 
-Agentic Skill Mill is the parent project that defines the skill-system-template architecture. The following projects are built on the same fragment-composition, 7-target compilation, and companion-CLI pattern:
+Agentic Skill Mill is the parent project that defines the skill-system-template architecture. The following projects are built on the same fragment-composition, 5-target compilation, and companion-CLI pattern:
 
 | Project | What it does | Site | Repo |
 |---------|-------------|------|------|

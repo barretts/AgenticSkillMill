@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 # install.sh -- Remote-friendly bootstrap installer (for curl|bash use)
-# Installs the npm package globally, then runs install-local.sh in skills-only mode.
+# Installs the npm package globally, then runs install.js in skills-only mode.
 
 set -euo pipefail
 
@@ -11,7 +11,7 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   echo "Usage: bash install.sh [tool flags]"
   echo ""
   echo "This script installs ${PACKAGE_NAME}@${PACKAGE_VERSION} globally and then"
-  echo "runs install-local.sh --skills-only with the flags you provide."
+  echo "runs install.js --skills-only with the flags you provide."
   echo ""
   echo "Examples:"
   echo "  bash install.sh --all"
@@ -28,16 +28,16 @@ npm install -g "${PACKAGE_NAME}@${PACKAGE_VERSION}"
 
 GLOBAL_NODE_MODULES="$(npm root -g)"
 PACKAGE_DIR="${GLOBAL_NODE_MODULES}/${PACKAGE_NAME}"
-LOCAL_INSTALLER="${PACKAGE_DIR}/install-local.sh"
+LOCAL_INSTALLER="${PACKAGE_DIR}/install.js"
 
 if [[ ! -f "$LOCAL_INSTALLER" ]]; then
-  echo "ERROR: Could not find install-local.sh at: $LOCAL_INSTALLER"
-  echo "Check the package 'files' list to ensure install-local.sh is published."
+  echo "ERROR: Could not find install.js at: $LOCAL_INSTALLER"
+  echo "Check the package 'files' list to ensure install.js is published."
   exit 1
 fi
 
 echo "==> Installing skills via local installer (skills-only mode)"
-bash "$LOCAL_INSTALLER" --skills-only "$@"
+node "$LOCAL_INSTALLER" --skills-only "$@"
 
 echo ""
 echo "==> Done."

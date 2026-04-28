@@ -11,21 +11,20 @@ There are multiple ways users consume it:
 | Remote install (bash) | `bash <(curl -fsSL https://<domain>/install.sh)` | End users on Linux/macOS |
 | Remote install (PowerShell) | `irm https://<domain>/install.ps1 \| iex` | End users on Windows |
 | npx (no install) | `npx --yes agentic-skill-mill@latest <command>` | Users running CLI commands without global install |
-| Local development | `git clone` then `bash install-local.sh --all` | Contributors working on the project itself |
+| Local development | `git clone` then `node install.js --all` | Contributors working on the project itself |
 
-### Two installer scripts
+### One unified installer
 
-**`install-local.sh`** is the full local installer. It runs from a cloned repo and handles:
-- `npm install` + `npm run build` + `npm run compile`
-- `npm link` to make `skillmill` available globally
+**`install.js`** is a single cross-platform Node.js installer that replaces the old shell/PowerShell split:
+- Runs `npm install` + `npm run build` + `npm run compile` + `npm link`
 - Copies compiled skill outputs to IDE-specific directories (~/.claude/skills, ~/.cursor/rules, etc.)
 - Supports `--skills-only` (skip build, just copy), `--uninstall`, `--compile-only`, and per-tool flags (`--cursor`, `--claude`, etc.)
 - Auto-detects installed tools when no flags are provided
 
-**`install.sh`** is the remote bootstrap installer. It is hosted at `https://agenticskillmill.com/install.sh` (source: `site/install.sh`) and bundled in the npm package. It:
+**`site/install.sh`** is the remote bootstrap installer. It is hosted at `https://agenticskillmill.com/install.sh` (source: `site/install.sh`) and bundled in the npm package. It:
 1. Runs `npm install -g agentic-skill-mill@latest`
-2. Locates `install-local.sh` inside the globally installed package
-3. Delegates to `install-local.sh --skills-only` with the user's flags
+2. Locates `install.js` inside the globally installed package
+3. Delegates to `node install.js --skills-only` with the user's flags
 
 Both scripts respect environment overrides `SKILLMILL_PACKAGE_NAME` and `SKILLMILL_PACKAGE_VERSION`.
 
@@ -36,11 +35,10 @@ The `files` array in `package.json` controls what ships to npm:
 | Entry | Purpose |
 |-------|---------|
 | `dist` | Compiled TypeScript CLI and library |
-| `compiled` | Pre-compiled skill outputs for all 7 IDE targets |
+| `compiled` | Pre-compiled skill outputs for all 5 IDE targets |
 | `skill` | Skill sources, fragments, compiler, and manifest |
 | `README.md` | Package documentation |
-| `install.sh` | Bootstrap installer (bundled for remote delegation) |
-| `install-local.sh` | Full local installer (used by bootstrap in --skills-only mode) |
+| `install.js` | Unified cross-platform installer |
 
 The `bin` field maps `skillmill` to `dist/cli/index.js`, so `npx agentic-skill-mill` and global install both expose the `skillmill` command.
 
@@ -76,8 +74,8 @@ When updating the bootstrap installer logic, edit `install.sh` and `install.ps1`
 
 | Change | Files to update |
 |--------|----------------|
-| Add a new skill | `install-local.sh` SKILLS array, `skill/build/manifest.json` |
-| Change package name | `package.json` name + bin, `install.sh` default, `site/install.sh` default, `install-local.sh` PROJECT_NAME + CLI_BIN_NAME + MANAGED_MARKER, `site/index.html`, README |
-| Change bootstrap behavior | `install.sh` and `install.ps1` (repo root), then copy to `site/install.sh` and `site/install.ps1` |
+| Add a new skill | `skill/build/manifest.json` |
+| Change package name | `package.json` name + bin, `site/install.sh` default, `install.js` PROJECT_NAME + CLI_BIN_NAME, `site/index.html`, README |
+| Change bootstrap behavior | `install.js`, then copy to `site/install.sh` and `site/install.ps1` |
 | Add a GitHub Actions secret | Repo settings, document in README |
 | Update domain | `site/CNAME`, README, skill source, architecture fragment |

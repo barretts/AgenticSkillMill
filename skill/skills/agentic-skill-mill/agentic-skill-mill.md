@@ -89,8 +89,7 @@ Direct content or more includes.
 Then register it:
 
 1. Add the skill entry to `skill/build/manifest.json` with its source path and fragment dependencies
-2. Add the skill name to the `SKILLS` array in `install-local.sh`
-3. Compile: `npm run compile`
+2. Compile: `npm run compile`
 
 ### Step 8: If Renaming the Project
 
@@ -102,7 +101,7 @@ After any change, run the full verification sequence:
 
 ```bash
 npm run build              # TypeScript CLI compiles cleanly
-npm run compile            # Skills compile to all 7 IDE targets
+npm run compile            # Skills compile to 5 IDE targets
 npm run compile:validate   # Cross-validates manifest vs source includes
 npx --yes agentic-skill-mill@latest --help  # CLI command surface works via npx
 ```

@@ -22,9 +22,9 @@ When the project, skill, or CLI needs a new name, update all touchpoints in one 
 
 4. **Compiler marker** (`skill/build/compile.mjs`) -- update the `MANAGED_BY` constant
 
-5. **Local installer** (`install-local.sh`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, `MANAGED_MARKER`, `SKILLS` array
+5. **Installer** (`install.js`) -- update `PROJECT_NAME`, `CLI_BIN_NAME`, constants
 
-6. **Bootstrap installer** (`install.sh`) -- update the default `PACKAGE_NAME`, then copy to `site/install.sh`
+6. **Bootstrap installer** (`site/install.sh`) -- update the default `PACKAGE_NAME`
 
 7. **Package metadata** (`package.json`) -- update `name`, `bin` key, and `description`
 
