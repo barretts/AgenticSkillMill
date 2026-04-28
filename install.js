@@ -142,7 +142,7 @@ function copyFile(src, dest) {
 // --- Shell helpers --------------------------------------------------------
 
 function runNode(args, options = {}) {
-  const result = spawnSync(process.execPath, args, {
+  const result = spawnSync('node', args, {
     stdio: 'inherit',
     cwd: repoDir,
     ...options,
@@ -152,8 +152,15 @@ function runNode(args, options = {}) {
   }
 }
 
-function runNpm(args) {
-  runNode(['npm', ...args]);
+function runNpm(args, options = {}) {
+  const result = spawnSync('npm', args, {
+    stdio: 'inherit',
+    cwd: repoDir,
+    ...options,
+  });
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
 }
 
 // --- Install functions ------------------------------------------------------
@@ -198,7 +205,6 @@ function installWindsurf() {
       copyFile(srcFile, path.join(destSkills, 'SKILL.md'));
     }
   }
-  console.log(`    Windsurf: rules -> ${destRules}`);
   console.log(`    Windsurf: skills -> ${destSkills}`);
 }
 
