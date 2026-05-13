@@ -1,0 +1,1 @@
+{"version":3,"file":"validate-manifest.js","sourceRoot":"","sources":["../../../src/cli/commands/validate-manifest.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAgB,EAA6D,MAAM,iCAAiC,CAAC;AAM9H,MAAM,CAAC,KAAK,UAAU,uBAAuB,CAC3C,OAAuC;IAEvC,OAAO,gBAAgB,CAAC;QACtB,YAAY,EAAE,OAAO,CAAC,YAAY;KACnC,CAAC,CAAC;AACL,CAAC"}

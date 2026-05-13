@@ -397,11 +397,33 @@ function parseArgs(argv) {
 // --- Build orchestration -------------------------------------------------
 
 function buildProject() {
+  const distDir = path.join(repoDir, 'dist');
+  const distCli = path.join(distDir, 'cli', 'index.js');
+  const compileScript = path.join(repoDir, 'skill', 'build', 'compile.mjs');
+  const sourceBuildAvailable = dirExists(path.join(repoDir, 'src')) && fileExists(compileScript);
+
+  if (!sourceBuildAvailable) {
+    if (!fileExists(distCli) || !dirExists(COMPILED_DIR)) {
+      console.error('ERROR: Static release is missing dist/ or compiled/. Use the dev branch to rebuild release artifacts.');
+      process.exit(1);
+    }
+
+    console.log('--> Static release artifacts found, installing runtime dependencies...');
+    runNpm(['install', '--omit=dev']);
+
+    if (fileExists(distCli)) {
+      fs.chmodSync(distCli, 0o755);
+    }
+
+    console.log('--> Linking CLI globally...');
+    runNpm(['link']);
+    return;
+  }
+
   console.log('--> Installing dependencies...');
   runNpm(['install']);
 
   console.log('--> Cleaning previous build...');
-  const distDir = path.join(repoDir, 'dist');
   if (dirExists(distDir)) {
     fs.rmSync(distDir, { recursive: true });
   }
@@ -409,7 +431,6 @@ function buildProject() {
   console.log('--> Building TypeScript...');
   runNpm(['run', 'build']);
 
-  const distCli = path.join(distDir, 'cli', 'index.js');
   if (fileExists(distCli)) {
     fs.chmodSync(distCli, 0o755);
   }
@@ -444,8 +465,13 @@ function main(argv) {
 
   // Compile-only path
   if (flags.compileOnly) {
+    const compileScript = path.join(repoDir, 'skill', 'build', 'compile.mjs');
+    if (!fileExists(compileScript)) {
+      console.error('ERROR: --compile-only requires the source branch (`dev`). Static main installs release artifacts only.');
+      process.exit(1);
+    }
     console.log('==> Compiling skills...');
-    runNode([path.join(repoDir, 'skill', 'build', 'compile.mjs')]);
+    runNode([compileScript]);
     console.log('==> Done.');
     return;
   }

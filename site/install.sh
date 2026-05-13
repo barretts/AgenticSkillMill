@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bash
 # install.sh -- Remote-friendly bootstrap installer (for curl|bash use)
 # Installs the npm package globally, then runs install.js in skills-only mode.
 

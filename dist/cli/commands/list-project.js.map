@@ -1,0 +1,1 @@
+{"version":3,"file":"list-project.js","sourceRoot":"","sources":["../../../src/cli/commands/list-project.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAmD,MAAM,4BAA4B,CAAC;AAM1G,MAAM,CAAC,KAAK,UAAU,kBAAkB,CACtC,OAAkC;IAElC,OAAO,WAAW,CAAC;QACjB,GAAG,EAAE,OAAO,CAAC,GAAG;KACjB,CAAC,CAAC;AACL,CAAC"}
