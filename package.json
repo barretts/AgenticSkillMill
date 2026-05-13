@@ -17,46 +17,20 @@
   "files": [
     "dist",
     "compiled",
-    "skill",
     "README.md",
     "install.js"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "lint": "eslint src",
-    "typecheck": "tsc --noEmit",
     "setup": "node install.js",
     "setup:all": "node install.js --all",
-    "setup:windows": "node install.js",
-    "setup:windows:all": "node install.js --all",
     "install-skills": "node install.js --skills-only",
-    "install-skills:windows": "node install.js --skills-only",
-    "uninstall-skills": "node install.js --uninstall",
-    "uninstall-skills:windows": "node install.js --uninstall",
-    "compile": "node skill/build/compile.mjs",
-    "compile:validate": "node skill/build/compile.mjs --validate",
-    "compile:watch": "node skill/build/compile.mjs --watch"
+    "uninstall-skills": "node install.js --uninstall"
   },
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^11.0.0"
   },
-  "devDependencies": {
-    "@types/node": "^20.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.58.0",
-    "@typescript-eslint/parser": "^8.58.0",
-    "@vitest/coverage-v8": "^4.1.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.3.0",
-    "vitest": "^4.1.0"
-  },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

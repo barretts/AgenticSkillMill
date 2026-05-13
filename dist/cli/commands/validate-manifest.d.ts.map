@@ -1,0 +1,1 @@
+{"version":3,"file":"validate-manifest.d.ts","sourceRoot":"","sources":["../../../src/cli/commands/validate-manifest.ts"],"names":[],"mappings":"AAAA,OAAO,EAAoB,KAAK,uBAAuB,EAAE,KAAK,sBAAsB,EAAE,MAAM,iCAAiC,CAAC;AAE9H,MAAM,WAAW,8BAA+B,SAAQ,uBAAuB;IAC7E,IAAI,EAAE,OAAO,CAAC;CACf;AAED,wBAAsB,uBAAuB,CAC3C,OAAO,EAAE,8BAA8B,GACtC,OAAO,CAAC,sBAAsB,CAAC,CAIjC"}

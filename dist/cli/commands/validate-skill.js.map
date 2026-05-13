@@ -1,0 +1,1 @@
+{"version":3,"file":"validate-skill.js","sourceRoot":"","sources":["../../../src/cli/commands/validate-skill.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAuD,MAAM,8BAA8B,CAAC;AAMlH,MAAM,CAAC,KAAK,UAAU,oBAAoB,CACxC,OAAoC;IAEpC,OAAO,aAAa,CAAC;QACnB,SAAS,EAAE,OAAO,CAAC,SAAS;QAC5B,YAAY,EAAE,OAAO,CAAC,YAAY;KACnC,CAAC,CAAC;AACL,CAAC"}
